@@ -7,14 +7,15 @@ class ST_Gateway:
 
     CREATE = '''CREATE TABLE stacktraces (
                     st_id SERIAL PRIMARY KEY,
-                    st_sig VARCHAR(200),
-                    st_stacktrace TEXT
+                    st_sig TEXT,
+                    st_stacktrace TEXT,
+                    st_issue VARCHAR(20)
                 )'''
 
     DELETE = "DROP TABLE IF EXISTS stacktraces;"
 
-    INSERT = "INSERT INTO stacktraces (st_stacktrace, st_sig) " +\
-             "VALUES ('{0}', '{1}')"
+    INSERT = "INSERT INTO stacktraces (st_issue, st_stacktrace, st_sig) " +\
+             "VALUES ('{0}', '{1}', '{2}')"
 
     FIND = "SELECT * FROM stacktraces WHERE st_sig='{0}'"
 
@@ -56,9 +57,10 @@ class ST_Gateway:
         '''delete the stacktraces table'''
         self.execute(self.DELETE)
 
-    def insert(self, stacktrace, signature):
+    def insert(self, issue, stacktrace, signature):
         '''insert a stacktrace and signature into the db'''
-        sql = self.INSERT.format(stacktrace, signature)
+        sql = self.INSERT.format(issue, stacktrace, signature)
+        print sql
         self.execute(sql)
 
     def find_matches(self, signature):
@@ -72,7 +74,7 @@ if __name__ == '__main__':
     st = ST_Gateway()
     st.delete()
     st.create()
-    st.insert("foo", "bar")
+    st.insert( 'jira-678', "foo", "bar")
     cur = st.find_matches("bar")
     for row in cur:
         print row

@@ -11,7 +11,7 @@ class Test_ST_Gateway(unittest.TestCase):
         self.st = ST_Gateway()
         self.st.delete()
         self.st.create()
-        self.st.insert("foo", "bar")
+        self.st.insert("foo", "bar", 'TIN-1234')
 
     def test_simple(self):
         cur = self.st.find_matches("bar")
