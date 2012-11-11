@@ -7,7 +7,7 @@ class ST_Gateway:
 
     CREATE = '''CREATE TABLE stacktraces (
                     st_id SERIAL PRIMARY KEY,
-                    st_sig TEXT,
+                    st_sig VARCHAR(128),
                     st_stacktrace TEXT,
                     st_issue VARCHAR(20)
                 )'''
@@ -60,7 +60,6 @@ class ST_Gateway:
     def insert(self, issue, stacktrace, signature):
         '''insert a stacktrace and signature into the db'''
         sql = self.INSERT.format(issue, stacktrace, signature)
-        print sql
         self.execute(sql)
 
     def find_matches(self, signature):
