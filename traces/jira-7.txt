@@ -1,0 +1,5 @@
+java.io.FileNotFoundException: fred.txt
+        at java.io.FileInputStream.<init>(FileInputStream.java)
+        at java.io.FileInputStream.<init>(FileInputStream.java)
+        at ExTest.readMyFile(ExTest.java:19)
+        at ExTest.main(ExTest.java:7)
