@@ -17,7 +17,8 @@ class ST_Gateway:
     INSERT = "INSERT INTO stacktraces (st_issue, st_stacktrace, st_sig) " +\
              "VALUES ('{0}', '{1}', '{2}')"
 
-    FIND = "SELECT * FROM stacktraces WHERE st_sig='{0}'"
+    FIND2 = "SELECT * FROM stacktraces WHERE st_sig='{0}'"
+    FIND = "SELECT st_issue, LEVENSHTEIN('{0}', st_sig) FROM stacktraces WHERE LEVENSHTEIN('{0}', st_sig) < 4;"
 
     def __init__(self):
         self.conn = None
