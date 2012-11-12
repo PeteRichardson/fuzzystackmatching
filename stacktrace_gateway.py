@@ -25,10 +25,11 @@ class ST_Gateway:
     def connect(self):
         '''establish a connection to the db.
            No effect if it already exists'''
-        self.conn = psycopg2.connect(host='localhost',
-                        database='work',
-                        user='pete',
-                        password='slartybartfast')
+        if self.conn == None:
+            self.conn = psycopg2.connect(host='localhost',
+                            database='work',
+                            user='pete',
+                            password='slartybartfast')
 
     def execute(self, sql):
         try:
@@ -47,6 +48,7 @@ class ST_Gateway:
         finally:
             if self.conn:
                 self.conn.close()
+                self.conn = None
 
     def create(self):
         '''create the stacktraces table'''
