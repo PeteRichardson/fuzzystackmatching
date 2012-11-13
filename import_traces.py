@@ -3,21 +3,21 @@
 from glob import glob
 import sys
 from stacktrace import StackTrace
-from stacktrace_gateway import ST_Gateway
+from stacktrace_gateway import STGateway
 
-files = glob('traces/*.txt')
-if len(files) == 0:
+FILES = glob('traces/*.txt')
+if len(FILES) == 0:
     print "Nothing matched traces/*.txt"
     sys.exit(0)
 
-st = ST_Gateway()
-st.delete()
-st.create()
+ST = STGateway()
+ST.delete()
+ST.create()
 
 
-for file in files:
-    issue = file[7:-4]
-    stack = open(file, "r").read()
+for filename in FILES:
+    issue = filename[7:-4]
+    stack = open(filename, "r").read()
     trace = StackTrace(stack)
     print "sig is {0} chars".format(len(trace.signature))
-    st.insert(issue, stack, trace.signature)
+    ST.insert(issue, stack, trace.signature)

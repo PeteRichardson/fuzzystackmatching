@@ -1,20 +1,22 @@
 #!/usr/bin/env python
+'''stackmatch.py - take a stacktrace and try to find a match
+                    in the database'''
 
 import sys
 from glob import glob
 from stacktrace import StackTrace
-from stacktrace_gateway import ST_Gateway
+from stacktrace_gateway import STGateway
 
 assert len(sys.argv) > 1, "Need at least one arg"
-files = glob(sys.argv[1])
-if len(files) == 0:
+FILES = glob(sys.argv[1])
+if len(FILES) == 0:
     print "Nothing matched {0}".format(sys.argv[1])
     sys.exit(0)
 
-st = ST_Gateway()
-for file in files:
-    stacktext = open(file, "r").read()
+STG = STGateway()
+for filename in FILES:
+    stacktext = open(filename, "r").read()
     trace = StackTrace(stacktext)
-    curs = st.find_matches(trace.signature)
+    curs = STG.find_matches(trace.signature)
     for row in curs:
         print row

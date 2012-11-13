@@ -1,9 +1,11 @@
-# stacktrace_gateway.py - python class to handle stacktraces db
+'''stacktrace_gateway.py - python class to handle stacktraces db'''
 
 import psycopg2
 
 
-class ST_Gateway:
+class STGateway:
+    
+    '''python class to handle stacktraces db'''
 
     CREATE = '''CREATE TABLE stacktraces (
                     st_id SERIAL PRIMARY KEY,
@@ -18,7 +20,8 @@ class ST_Gateway:
              "VALUES ('{0}', '{1}', '{2}')"
 
     FIND2 = "SELECT * FROM stacktraces WHERE st_sig='{0}'"
-    FIND = "SELECT st_issue, LEVENSHTEIN('{0}', st_sig) FROM stacktraces WHERE LEVENSHTEIN('{0}', st_sig) < 4;"
+    FIND = "SELECT st_issue, LEVENSHTEIN('{0}', st_sig) FROM stacktraces " +\
+            "WHERE LEVENSHTEIN('{0}', st_sig) < 4;"
 
     def __init__(self):
         self.conn = None
@@ -33,18 +36,21 @@ class ST_Gateway:
                             password='slartybartfast')
 
     def execute(self, sql):
+        '''execute a single statement against the db.
+           For now it always opens and closes the connection.
+           Not very efficient.'''
         try:
             self.connect()
             cur = self.conn.cursor()
             cur.execute(sql)
             self.conn.commit()
 
-        except psycopg2.DatabaseError, e:
+        except psycopg2.DatabaseError, exception:
 
             if self.conn:
                 self.conn.rollback()
 
-            raise e
+            raise exception
 
         finally:
             if self.conn:
@@ -53,7 +59,6 @@ class ST_Gateway:
 
     def create(self):
         '''create the stacktraces table'''
-        self.connect()
         self.execute(self.CREATE)
 
     def delete(self):
@@ -66,6 +71,8 @@ class ST_Gateway:
         self.execute(sql)
 
     def find_matches(self, signature):
+        '''use levenshtein distance < 4 against fuzzy hash
+           to find matching stacktraces in db'''
         sql = self.FIND.format(signature)
         self.connect()
         cursor = self.conn.cursor()
@@ -73,10 +80,10 @@ class ST_Gateway:
         return cursor.fetchall()
 
 if __name__ == '__main__':
-    st = ST_Gateway()
-    st.delete()
-    st.create()
-    st.insert( 'jira-678', "foo", "bar")
-    cur = st.find_matches("bar")
-    for row in cur:
+    STG = STGateway()
+    STG.delete()
+    STG.create()
+    STG.insert('jira-678', "foo", "bar")
+    CURS = STG.find_matches("bar")
+    for row in CURS:
         print row
